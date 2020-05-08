@@ -29,7 +29,7 @@ function TasksContainer(props) {
         <View style={syles.container}>
             {isFormOpened && <TaskForm />}
             <CountersContainer nbTasks={tasks.length} nbTasksCompleted={() => getTasksCompleted()} />
-            <TasksList tasks={tasks} onChangeStatus={onChangeStatus} onDeleteTask={onDeleteTask} />
+            <TasksList tasks={tasks} />
             <FloatingButton toggleForm={toggleForm} isFormOpened={isFormOpened} />
         </View>
     );
