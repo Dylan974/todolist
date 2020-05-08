@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { toggleTask } from '../../redux/actions';
 
 const TaskTile = ({ id, title, completed }) => {
+    const dispatch = useDispatch();
     return (
-        <TouchableHighlight onPress={() => onChangeStatus(id)}>
+        <TouchableHighlight onPress={() => dispatch(toggleTask(id))}>
             <View style={styles.container}>
                 <View style={styles.subcontainer}>
                     <Image
