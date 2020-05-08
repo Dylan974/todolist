@@ -1,94 +1,64 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-
-import TaskForm from "./TaskForm";
-import TasksList from "./TasksList";
-import CountersContainer from "./CountersContainer";
-import FloatingButton from "../_Shared/FloatingButton";
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import TasksList from './TasksList';
+import TaskForm from './TaskForm';
+import CountersContainer from './CountersContainer';
+import FloatingButton from '../_Shared/FloatingButton';
 
 function TasksContainer(props) {
-  const [tasks, setTasks] = useState([
-    { id: new Date().getTime(), title: "Nouvelle tâches", completed: false },
-  ]);
-  const [isFormOpened, setIsFormOpened] = useState(true);
+    const [tasks, setTasks] = useState([{ id: new Date().getTime().toString(), title: 'Nouvelle tâche', completed: false }]);
 
-  const onAddTask = (title) => {
-    const newTask = {
-      id: new Date().getTime(),
-      title: title,
-      completed: false,
+    const [isFormOpened, setIsFormOpened] = useState(false);
+
+    const onAddTask = (title) => {
+        setTasks([{ id: new Date().getTime().toString(), title, completed: false }, ...tasks]);
     };
-    setTasks([newTask, ...tasks]);
-  };
 
-  const onChangeStatus = (id) => {
-    let newTasks = [];
+    const onDeleteTask = (id) => {
+        const newTasks = tasks.filter(task => task.id != id);
+        setTasks([...newTasks]);
+    };
 
-    tasks.forEach((task) => {
-      if (task.id === id) {
-        newTasks.push({
-          id: id,
-          title: task.title,
-          completed: !task.completed,
+    const onChangeStatus = (id) => {
+        let newTasks = [];
+        tasks.forEach(task => {
+            if (task.id === id) {
+                newTasks.push({ id, title: task.title, completed: !task.completed });
+            } else {
+                newTasks.push(task);
+            }
+        })
+        setTasks(newTasks);
+    };
+
+    const getTasksCompleted = () => {
+        let counter = 0;
+
+        tasks.forEach(task => {
+            if (task.completed) counter++;
         });
-      } else {
-        newTasks.push(task);
-      }
-    });
+        return counter;
+    };
 
-    setTasks(newTasks);
-  };
+    const toggleForm = () => {
+        setIsFormOpened(!isFormOpened);
+    }
 
-  const onDeleteTask = (id) => {
-    let newTasks = [];
+    return (
+        <View style={syles.container}>
+            {isFormOpened && <TaskForm onAddTask={onAddTask} />}
+            <CountersContainer nbTasks={tasks.length} nbTasksCompleted={() => getTasksCompleted()} />
+            <TasksList tasks={tasks} onChangeStatus={onChangeStatus} onDeleteTask={onDeleteTask} />
+            <FloatingButton toggleForm={toggleForm} isFormOpened={isFormOpened} />
+        </View>
+    );
+};
 
-    tasks.forEach((task) => {
-      if (task.id !== id) {
-        newTasks.push(task);
-      }
-    });
-
-    setTasks(newTasks);
-  };
-
-  const getTasksCompleted = () => {
-    let counter = 0;
-
-    tasks.forEach((task) => {
-      if (task.completed) {
-        counter++;
-      }
-    });
-
-    return counter;
-  };
-
-  const toggleForm = () => {
-    setIsFormOpened(!isFormOpened);
-  };
-
-  return (
-    <View style={styles.container}>
-      {isFormOpened && <TaskForm onAddTask={onAddTask} />}
-      <CountersContainer
-        nbTasks={tasks.length}
-        nbTasksCompleted={() => getTasksCompleted()}
-      />
-      <TasksList
-        tasks={tasks}
-        onChangeStatus={onChangeStatus}
-        onDeleteTask={onDeleteTask}
-      />
-      <FloatingButton toggleForm={toggleForm} isFormOpened={isFormOpened} />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    position: "relative",
-  },
+const syles = StyleSheet.create({
+    container: {
+        flex: 1,
+        position: 'relative'
+    }
 });
 
 export default TasksContainer;
