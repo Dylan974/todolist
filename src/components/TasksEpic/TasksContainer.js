@@ -8,32 +8,9 @@ import { useSelector } from 'react-redux';
 import { getTasks } from '../../redux/reducers/selectors';
 
 function TasksContainer(props) {
-    const [tasks, setTasks] = useState([{ id: new Date().getTime().toString(), title: 'Nouvelle tâche', completed: false }]);
-
-    const allTasks = useSelector(getTasks);
+    const tasks = useSelector(getTasks);
 
     const [isFormOpened, setIsFormOpened] = useState(false);
-
-    const onAddTask = (title) => {
-        setTasks([{ id: new Date().getTime().toString(), title, completed: false }, ...tasks]);
-    };
-
-    const onDeleteTask = (id) => {
-        const newTasks = tasks.filter(task => task.id != id);
-        setTasks([...newTasks]);
-    };
-
-    const onChangeStatus = (id) => {
-        let newTasks = [];
-        tasks.forEach(task => {
-            if (task.id === id) {
-                newTasks.push({ id, title: task.title, completed: !task.completed });
-            } else {
-                newTasks.push(task);
-            }
-        })
-        setTasks(newTasks);
-    };
 
     const getTasksCompleted = () => {
         let counter = 0;
@@ -50,7 +27,7 @@ function TasksContainer(props) {
 
     return (
         <View style={syles.container}>
-            {isFormOpened && <TaskForm onAddTask={onAddTask} />}
+            {isFormOpened && <TaskForm />}
             <CountersContainer nbTasks={tasks.length} nbTasksCompleted={() => getTasksCompleted()} />
             <TasksList tasks={tasks} onChangeStatus={onChangeStatus} onDeleteTask={onDeleteTask} />
             <FloatingButton toggleForm={toggleForm} isFormOpened={isFormOpened} />
